@@ -8,7 +8,31 @@ from sklearn.datasets import make_moons, make_circles, make_classification
 
 import svm
 import datetime
-from kernel import linear, radial_basis
+# from kernel import linear, radial_basis
+
+import numpy as np
+import numpy.linalg as la
+
+"""Implementeaza o serie de kernel-uri bine cunoscute: liniar, RBF
+"""
+
+def linear():
+    """
+    Intoarce o functie anonima, in doi parametrii, x si y, ce calculeaza produsul scalar a doi vectori x si y
+    :return:
+    """
+    return lambda x, y: np.inner(x, y)
+
+
+def radial_basis(gamma=10):
+    """
+    Intoarce o functie anonima, in doi parametrii, x si y, ce implementeaza forma de Radial Basis Function,
+    avand parametrul gamma
+    :param gamma: parametrul de ponderare a normei diferentei vectorilor x si y
+    :return:
+    """
+    return lambda x, y: np.exp(-gamma * la.norm(np.subtract(x, y)) ** 2)
+
 
 if __name__ == "__main__":
     # h = .02  # step size in the mesh
@@ -39,6 +63,8 @@ if __name__ == "__main__":
         svm.SVMTrainer(kernel=linear(), c=100),
         svm.SVMTrainer(kernel=radial_basis(gamma=1), c=100)
     ]
+
+    print (linear())
 
     figure = plt.figure(figsize=(27, 9))
     i = 1
