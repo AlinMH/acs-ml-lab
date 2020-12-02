@@ -1,1 +1,1 @@
-# Laboratoare ML ACS 2019 
+# Machine Learning Laboratories ACS 2019 
