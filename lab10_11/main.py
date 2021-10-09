@@ -1,8 +1,7 @@
+import numpy as np
 import mnist
 from typing import List
-import numpy as np
-import matplotlib.pyplot as plt
-from im2col import *
+from im2col import im2col_indices, col2im_indices
 
 
 class Layer:
