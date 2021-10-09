@@ -1,17 +1,16 @@
 # Tudor Berariu, 2016
 
+from copy import deepcopy
 from random import randint
 from sys import argv
 from zipfile import ZipFile
-from copy import deepcopy
-from scipy.special import comb
-
 
 import matplotlib.markers
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy
 from mpl_toolkits.mplot3d import Axes3D
+from scipy.special import comb
 
 
 def getArchive():

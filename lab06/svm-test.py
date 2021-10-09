@@ -1,17 +1,16 @@
-import numpy as np
+import datetime
+
 import matplotlib.pyplot as plt
+import numpy as np
+import numpy.linalg as la
+import svm
 from matplotlib.colors import ListedColormap
+from sklearn.datasets import make_circles, make_classification, make_moons
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-from sklearn.datasets import make_moons, make_circles, make_classification
-
-import svm
-import datetime
 # from kernel import linear, radial_basis
 
-import numpy as np
-import numpy.linalg as la
 
 """Implementeaza o serie de kernel-uri bine cunoscute: liniar, RBF
 """

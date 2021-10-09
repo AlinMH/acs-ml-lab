@@ -1,7 +1,8 @@
-import numpy as np
-import mnist
 from typing import List
-from im2col import im2col_indices, col2im_indices
+
+import mnist
+import numpy as np
+from im2col import col2im_indices, im2col_indices
 
 
 class Layer:

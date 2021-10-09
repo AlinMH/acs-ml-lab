@@ -1,14 +1,15 @@
 # Tudor Berariu, 2016
 # Razvan Chitu, 2018
 
+import math
 # Standard library imports
 from argparse import ArgumentParser
 from random import choice, random
 from time import sleep
+
+import numpy as np
 # External library imports
 from matplotlib import pyplot as plt
-import numpy as np
-import math
 # Local imports
 from mini_pacman import Game
 

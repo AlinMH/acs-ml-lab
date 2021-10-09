@@ -1,17 +1,17 @@
 # Tudor Berariu, 2016
 
 
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.markers
 import math
-
+from random import randint
 from sys import argv
 from zipfile import ZipFile
+
+import matplotlib.markers
+import matplotlib.pyplot as plt
+import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
 from scipy.cluster import hierarchy
 from scipy.spatial.distance import euclidean
-from random import randint
-from mpl_toolkits.mplot3d import Axes3D
 
 
 def getArchive():

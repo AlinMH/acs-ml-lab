@@ -1,8 +1,7 @@
-import numpy as np
-import cvxopt.solvers
-
 import logging
 
+import cvxopt.solvers
+import numpy as np
 
 MIN_SUPPORT_VECTOR_MULTIPLIER = 1e-5
 

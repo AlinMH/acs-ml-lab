@@ -1,6 +1,6 @@
-import sys
-import os.path
 import math
+import os.path
+import sys
 from argparse import ArgumentParser
 from copy import copy
 from random import choice

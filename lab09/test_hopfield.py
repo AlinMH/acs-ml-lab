@@ -1,10 +1,11 @@
-from hopfield import HopfieldNetwork
-from argparse import ArgumentParser
-from time import sleep
-from os import path
-from random import random, choice
-from PIL import Image
 import os
+from argparse import ArgumentParser
+from os import path
+from random import choice, random
+from time import sleep
+
+from hopfield import HopfieldNetwork
+from PIL import Image
 
 
 # Reads all / first n patterns from specified file

@@ -4,15 +4,12 @@
 #
 # License: BSD 3 clause
 
-from sklearn.externals.six.moves import zip
-
 import matplotlib.pyplot as plt
-
 from sklearn.datasets import make_gaussian_quantiles
 from sklearn.ensemble import AdaBoostClassifier
+from sklearn.externals.six.moves import zip
 from sklearn.metrics import accuracy_score
 from sklearn.tree import DecisionTreeClassifier
-
 
 X, y = make_gaussian_quantiles(n_samples=13000, n_features=10,
                                n_classes=3, random_state=1)
