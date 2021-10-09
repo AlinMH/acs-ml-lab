@@ -18,11 +18,13 @@ def getArchive():
     archive_url = "http://www.uni-marburg.de/fb12/datenbionik/downloads/FCPS"
     local_archive = "FCPS.zip"
     from os import path
+
     if not path.isfile(local_archive):
         import urllib
+
         print("downloading...")
         urllib.urlretrieve(archive_url, filename=local_archive)
-        assert (path.isfile(local_archive))
+        assert path.isfile(local_archive)
         print("got the archive")
     return ZipFile(local_archive)
 
@@ -39,8 +41,8 @@ def getDataSet(archive, dataSetName):
         Xs = np.zeros([N, D])
         for i in range(N):
             data = f.readline().decode("UTF-8").strip().split("\t")
-            assert (len(data) == (D + 1))  # check line
-            assert (int(data[0]) == (i + 1))
+            assert len(data) == (D + 1)  # check line
+            assert int(data[0]) == (i + 1)
             Xs[i] = np.array(list(map(float, data[1:])))
 
     clsFile = path + ".cls"
@@ -54,13 +56,13 @@ def getDataSet(archive, dataSetName):
         i = 0
         while line and i < N:
             data = line.strip().split("\t")
-            assert (len(data) == 2)
-            assert (int(data[0]) == (i + 1))
+            assert len(data) == 2
+            assert int(data[0]) == (i + 1)
             labels[i] = int(data[1])
             line = f.readline().decode("UTF-8")
             i = i + 1
 
-        assert (i == N)
+        assert i == N
 
     return Xs, labels  # return data and correct classes
 
@@ -99,7 +101,7 @@ def singleLinkage(Xs):
         clust_idx2 = -1
         for cluster_idx, cluster in enumerate(clusters):
             for point in cluster[1]:
-                for cluster_idx2, cluster2 in enumerate(clusters[(cluster_idx + 1):]):
+                for cluster_idx2, cluster2 in enumerate(clusters[(cluster_idx + 1) :]):
                     for point2 in cluster2[1]:
                         if euclidean(point, point2) < dmin:
                             dmin = euclidean(point, point2)
@@ -139,7 +141,7 @@ def completeLinkage(Xs):
         for cluster_idx, cluster in enumerate(clusters):
             dmax = -math.inf
             for point in cluster[1]:
-                for cluster_idx2, cluster2 in enumerate(clusters[(cluster_idx + 1):]):
+                for cluster_idx2, cluster2 in enumerate(clusters[(cluster_idx + 1) :]):
                     for point2 in cluster2[1]:
                         dist = euclidean(point, point2)
                         if dist < dmin:
@@ -183,18 +185,19 @@ def groupAverageLinkage(Xs):
 
         for cluster_idx, cluster in enumerate(clusters):
             dist[cluster_idx] = {}
-            for cluster_idx2, cluster2 in enumerate(clusters[(cluster_idx + 1):]):
+            for cluster_idx2, cluster2 in enumerate(clusters[(cluster_idx + 1) :]):
                 dist[cluster_idx][cluster_idx + cluster_idx2 + 1] = 0
 
         for cluster_idx, cluster in enumerate(clusters):
             for point in cluster[1]:
-                for cluster_idx2, cluster2 in enumerate(clusters[(cluster_idx + 1):]):
+                for cluster_idx2, cluster2 in enumerate(clusters[(cluster_idx + 1) :]):
                     for point2 in cluster2[1]:
-                        dist[cluster_idx][cluster_idx + cluster_idx2 + 1] += 1 / (len(cluster) * len(cluster2)) * \
-                                                                             euclidean(point, point2)
+                        dist[cluster_idx][cluster_idx + cluster_idx2 + 1] += (
+                            1 / (len(cluster) * len(cluster2)) * euclidean(point, point2)
+                        )
 
         for cluster_idx, cluster in enumerate(clusters):
-            for cluster_idx2, cluster2 in enumerate(clusters[(cluster_idx + 1):]):
+            for cluster_idx2, cluster2 in enumerate(clusters[(cluster_idx + 1) :]):
                 d = dist[cluster_idx][cluster_idx + cluster_idx2 + 1]
                 if d < dmin:
                     dmin = d
@@ -218,7 +221,7 @@ def groupAverageLinkage(Xs):
 
 def extractClusters(Xs, Z):
     (N, D) = Xs.shape
-    assert (Z.shape == (N - 1, 4))
+    assert Z.shape == (N - 1, 4)
 
     # TODO 4
 
@@ -227,15 +230,19 @@ def extractClusters(Xs, Z):
 
 
 def randIndex(clusters, labels):
-    assert (labels.size == clusters.size)
+    assert labels.size == clusters.size
     N = clusters.size
 
     a = 0.0
     b = 0.0
 
     for (i, j) in [(i, j) for i in range(N) for j in range(i + 1, N) if i < j]:
-        if ((clusters[i] == clusters[j]) and (labels[i] == labels[j]) or
-                (clusters[i] != clusters[j]) and (labels[i] != labels[j])):
+        if (
+            (clusters[i] == clusters[j])
+            and (labels[i] == labels[j])
+            or (clusters[i] != clusters[j])
+            and (labels[i] != labels[j])
+        ):
             a = a + 1
         b = b + 1
 
@@ -260,7 +267,7 @@ def plot(Xs, labels, K, clusters):
         y = Xs[:, 1]
         z = Xs[:, 2]
         fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
+        ax = fig.add_subplot(111, projection="3d")
         for (_x, _y, _z, _c, _l) in zip(x, y, z, clusters, labels):
             ax.scatter(_x, _y, _z, s=200, c=[colors[_c]], marker=markers[_l])
         plt.show()

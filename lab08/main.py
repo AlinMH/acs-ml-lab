@@ -10,7 +10,7 @@ class Item(object):
         self.weight = w
 
 
-with open('dataset') as fp:
+with open("dataset") as fp:
     capacity_line = fp.readline()
     CAPACITY = int(capacity_line)
 

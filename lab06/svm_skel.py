@@ -38,8 +38,7 @@ class SVMTrainer(object):
         return K
 
     def _construct_predictor(self, X, y, lagrange_multipliers):
-        support_vector_indices = \
-            lagrange_multipliers > MIN_SUPPORT_VECTOR_MULTIPLIER
+        support_vector_indices = lagrange_multipliers > MIN_SUPPORT_VECTOR_MULTIPLIER
 
         support_multipliers = lagrange_multipliers[support_vector_indices]
         support_vectors = X[support_vector_indices]
@@ -49,20 +48,26 @@ class SVMTrainer(object):
         # Desi bias-ul poate fi calculat pe baza unei singure valori din setul vectorilor de suport,
         # pentru o forma stabila numeric, folosim o media peste toti vectorii suport
         bias = np.mean(
-            [y_k - SVMPredictor(
-                kernel=self._kernel,
-                bias=0.0,
-                weights=support_multipliers,
-                support_vectors=support_vectors,
-                support_vector_labels=support_vector_labels).predict(x_k)
-             for (y_k, x_k) in zip(support_vector_labels, support_vectors)])
+            [
+                y_k
+                - SVMPredictor(
+                    kernel=self._kernel,
+                    bias=0.0,
+                    weights=support_multipliers,
+                    support_vectors=support_vectors,
+                    support_vector_labels=support_vector_labels,
+                ).predict(x_k)
+                for (y_k, x_k) in zip(support_vector_labels, support_vectors)
+            ]
+        )
 
         return SVMPredictor(
             kernel=self._kernel,
             bias=bias,
             weights=support_multipliers,
             support_vectors=support_vectors,
-            support_vector_labels=support_vector_labels)
+            support_vector_labels=support_vector_labels,
+        )
 
     def _compute_multipliers(self, X, y):
         """
@@ -104,7 +109,7 @@ class SVMTrainer(object):
         Vectorul `a' tine loc de `x' in forma ecuatiilor pentru cvxopt.
         """
 
-        # TODO calculeaza valoarea matricii P = (y * y^T) . K 
+        # TODO calculeaza valoarea matricii P = (y * y^T) . K
         # P = cvxopt.matrix(...)
 
         # TODO calculeaza valoarea vectorului q
@@ -127,7 +132,7 @@ class SVMTrainer(object):
         # A = cvxopt.matrix(..., tc = 'd')
         # b = cvxopt.matrix(...)
 
-        cvxopt.solvers.options['show_progress'] = False
+        cvxopt.solvers.options["show_progress"] = False
         # solution = cvxopt.solvers.qp(P, q, G, h, A, b)        # decomentati linia cand ati implementat matricile de mai sus
 
         # intoarcem multiplicatorii Lagrange sub forma liniarizata - vezi functia np.ravel
@@ -135,12 +140,7 @@ class SVMTrainer(object):
 
 
 class SVMPredictor(object):
-    def __init__(self,
-                 kernel,
-                 bias,
-                 weights,
-                 support_vectors,
-                 support_vector_labels):
+    def __init__(self, kernel, bias, weights, support_vectors, support_vector_labels):
         self._kernel = kernel
         self._bias = bias
         self._weights = weights
@@ -162,9 +162,7 @@ class SVMPredictor(object):
             unde m itereaza peste multimea vectorilor de suport
         """
         result = self._bias
-        for z_i, x_i, y_i in zip(self._weights,
-                                 self._support_vectors,
-                                 self._support_vector_labels):
+        for z_i, x_i, y_i in zip(self._weights, self._support_vectors, self._support_vector_labels):
             result += z_i * y_i * self._kernel(x_i, x)
         return np.sign(result).item()
 

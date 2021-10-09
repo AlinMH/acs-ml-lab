@@ -6,7 +6,6 @@ from im2col import col2im_indices, im2col_indices
 
 
 class Layer:
-
     def forward(self, x: np.ndarray) -> np.ndarray:
         raise NotImplementedError
 
@@ -18,7 +17,6 @@ class Layer:
 
 
 class FeedForwardNetwork:
-
     def __init__(self, layers: List[Layer]):
         self.layers = layers
         self._inputs = None
@@ -46,9 +44,8 @@ class FeedForwardNetwork:
 
 
 class Linear(Layer):
-
     def __init__(self, insize: int, outsize: int) -> None:
-        bound = np.sqrt(6. / insize)
+        bound = np.sqrt(6.0 / insize)
         self.weight = np.random.uniform(-bound, bound, (insize, outsize))
         self.bias = np.zeros((outsize,))
 
@@ -65,18 +62,18 @@ class Linear(Layer):
         self.dweight = x.T @ dy
         self.dbias = dy.sum(axis=0)
 
-        return (dy @ self.weight.T)
+        return dy @ self.weight.T
 
-    def update(self, mode='SGD', lr=0.001, mu=0.9):
+    def update(self, mode="SGD", lr=0.001, mu=0.9):
 
-        if mode == 'SGD':
+        if mode == "SGD":
             self.weight -= lr * self.dweight
             self.bias -= lr * self.dbias
-        elif mode == 'momentum':
+        elif mode == "momentum":
             self.dw = -lr * self.dweight + mu * self.dw
             self.weight += self.dw
         else:
-            raise ValueError('mode should be SGD or momentum, not ' + str(mode))
+            raise ValueError("mode should be SGD or momentum, not " + str(mode))
 
 
 class ReLU(Layer):
@@ -107,7 +104,7 @@ class MaxPool2D(Layer):
         w_out = (w - self.size) / self.stride + 1
 
         if not w_out.is_integer() or not h_out.is_integer():
-            raise Exception('Invalid output dimension!')
+            raise Exception("Invalid output dimension!")
 
         h_out, w_out = int(h_out), int(w_out)
         X_reshaped = x.reshape(n * d, 1, h, w)
@@ -152,7 +149,7 @@ class Flatten(Layer):
 
 class Conv2D(Layer):
     def __init__(self, filters, D, H, W, stride, padding):
-        bound = np.sqrt(6. / filters)
+        bound = np.sqrt(6.0 / filters)
 
         self.weight = np.random.uniform(-bound, bound, (filters, D, H, W))
         self.bias = np.zeros((filters,))
@@ -173,7 +170,7 @@ class Conv2D(Layer):
         w_out = (w_x - w_filter + 2 * self.padding) / self.stride + 1
 
         if not h_out.is_integer() or not w_out.is_integer():
-            raise Exception('Invalid output dimension!')
+            raise Exception("Invalid output dimension!")
 
         h_out, w_out = int(h_out), int(w_out)
         X_col = im2col_indices(x, h_filter, w_filter, padding=self.padding, stride=self.stride)
@@ -201,13 +198,12 @@ class Conv2D(Layer):
 
         return dX
 
-    def update(self, mode='SGD', lr=0.001, mu=0.9):
+    def update(self, mode="SGD", lr=0.001, mu=0.9):
         self.weight -= lr * self.dweight
         self.bias -= lr * self.dbias
 
 
 class CrossEntropy:
-
     def __init__(self):
         pass
 
@@ -232,7 +228,7 @@ def accuracy(y: np.ndarray, t: np.ndarray) -> float:
     return np.mean([1 if np.argmax(y[i]) == t[i] else 0 for i in range(len(y))])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     train_imgs = mnist.train_images()
     train_labels = mnist.train_labels()
     test_imgs = mnist.test_images()
@@ -249,19 +245,18 @@ if __name__ == '__main__':
     HIDDEN_UNITS = 1682
     EPOCHS_NO = 20
 
-    optimize_args = {'mode': 'momentum', 'lr': .005}
+    optimize_args = {"mode": "momentum", "lr": 0.005}
 
-    net = FeedForwardNetwork([Conv2D(filters=2, D=1, H=2, W=2, stride=1, padding=1),
-                              ReLU(),
-                              Flatten(),
-                              Linear(HIDDEN_UNITS, 10)])
+    net = FeedForwardNetwork(
+        [Conv2D(filters=2, D=1, H=2, W=2, stride=1, padding=1), ReLU(), Flatten(), Linear(HIDDEN_UNITS, 10)]
+    )
     cost_function = CrossEntropy()
 
     for epoch in range(EPOCHS_NO):
         for b_no, idx in enumerate(range(0, len(train_imgs), BATCH_SIZE)):
             # 1. Prepare next batch
-            x = train_imgs[idx:idx + BATCH_SIZE, :, :]
-            t = train_labels[idx:idx + BATCH_SIZE]
+            x = train_imgs[idx : idx + BATCH_SIZE, :, :]
+            t = train_labels[idx : idx + BATCH_SIZE]
 
             # 2. Compute gradient
             # TODO <8> : Compute gradient
@@ -273,12 +268,14 @@ if __name__ == '__main__':
             # 3. Update network parameters
             net.update(**optimize_args)
 
-            print(f'\rEpoch {epoch + 1:02d} '
-                  f'| Batch {b_no:03d} '
-                  f'| Train NLL: {loss:6.3f} '
-                  f'| Train Acc: {accuracy(y, t) * 100:6.2f}% ', end='')
+            print(
+                f"\rEpoch {epoch + 1:02d} "
+                f"| Batch {b_no:03d} "
+                f"| Train NLL: {loss:6.3f} "
+                f"| Train Acc: {accuracy(y, t) * 100:6.2f}% ",
+                end="",
+            )
 
         y = net.forward(test_imgs, train=False)
         test_nll = cost_function.forward(y, test_labels)
-        print(f'| Test NLL: {test_nll:6.3f} '
-              f'| Test Acc: {accuracy(y, test_labels) * 100:3.2f}%')
+        print(f"| Test NLL: {test_nll:6.3f} " f"| Test Acc: {accuracy(y, test_labels) * 100:3.2f}%")

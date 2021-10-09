@@ -11,10 +11,10 @@ class Maze:
     NORTH, EAST, SOUTH, WEST = 0, 1, 2, 3  # actions
 
     DYNAMICS = {  # the stochastic effects of actions
-        NORTH: {(0, -1): 0.1, (-1, 0): .8, (0, 1): .1},
-        EAST: {(-1, 0): 0.1, (0, 1): .8, (1, 0): .1},
-        SOUTH: {(0, 1): 0.1, (1, 0): .8, (0, -1): .1},
-        WEST: {(1, 0): 0.1, (0, -1): .8, (-1, 0): .1},
+        NORTH: {(0, -1): 0.1, (-1, 0): 0.8, (0, 1): 0.1},
+        EAST: {(-1, 0): 0.1, (0, 1): 0.8, (1, 0): 0.1},
+        SOUTH: {(0, 1): 0.1, (1, 0): 0.8, (0, -1): 0.1},
+        WEST: {(1, 0): 0.1, (0, -1): 0.8, (-1, 0): 0.1},
     }
 
     WALL, EMPTY = "x", " "
@@ -51,8 +51,7 @@ class Maze:
                     self._rewards[name] = float(value)
                 else:
                     self._cells.append(list(line.strip()))
-        self._states = [(i, j) for i, row in enumerate(self._cells)
-                        for j, cell in enumerate(row) if cell != Maze.WALL]
+        self._states = [(i, j) for i, row in enumerate(self._cells) for j, cell in enumerate(row) if cell != Maze.WALL]
 
     @property
     def actions(self):
@@ -112,16 +111,16 @@ class Maze:
 
     def print_values(self, v):
         for r, row_cells in enumerate(self._cells):
-            print(" | ".join([f"{v[(r, c)]:5.2f}" if cell == Maze.EMPTY else "     "
-                              for c, cell in enumerate(row_cells)]))
+            print(
+                " | ".join([f"{v[(r, c)]:5.2f}" if cell == Maze.EMPTY else "     " for c, cell in enumerate(row_cells)])
+            )
 
 
 def policy_iteration(game, args):
     gamma = args.gamma
     max_delta = args.max_delta
     v = {s: 0 for s in game.states}
-    policy = {s: choice(game.actions)
-              for s in game.states if not game.is_final(s)}
+    policy = {s: choice(game.actions) for s in game.states if not game.is_final(s)}
     done = False
     while not done:
         while True:
@@ -154,8 +153,7 @@ def value_iteration(game, args):
     gamma = args.gamma
     max_delta = args.max_delta
     v = {s: 0 for s in game.states}
-    policy = {s: choice(game.actions)
-              for s in game.states if not game.is_final(s)}
+    policy = {s: choice(game.actions) for s in game.states if not game.is_final(s)}
     while True:
         delta = 0.0
         for s in [s for s in game.states if not game.is_final(s)]:
@@ -187,7 +185,7 @@ def value_iteration(game, args):
 def main():
     argparser = ArgumentParser()
     argparser.add_argument("--map-name", type=str, default="be_careful")
-    argparser.add_argument("--gamma", type=float, default=.9)
+    argparser.add_argument("--gamma", type=float, default=0.9)
     argparser.add_argument("--max-delta", type=float, default=1e-8)
 
     args = argparser.parse_args()

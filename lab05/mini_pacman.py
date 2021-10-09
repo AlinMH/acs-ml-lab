@@ -3,13 +3,7 @@
 from random import choice
 
 ACTIONS = ("UP", "RIGHT", "DOWN", "LEFT", "STAY")
-ACTION_EFFECTS = {
-    "UP": (-1, 0),
-    "RIGHT": (0, 1),
-    "DOWN": (1, 0),
-    "LEFT": (0, -1),
-    "STAY": (0, 0)
-}
+ACTION_EFFECTS = {"UP": (-1, 0), "RIGHT": (0, 1), "DOWN": (1, 0), "LEFT": (0, -1), "STAY": (0, 0)}
 
 MOVE_REWARD = -0.1
 WIN_REWARD = 10.0
@@ -28,18 +22,17 @@ class Game(object):
 
         if all_actions_legal:
             self._legal_actions = [
-                [ACTIONS for g_col in range(len(self._map[g_row]))]
-                for g_row in range(len(self._map))
+                [ACTIONS for g_col in range(len(self._map[g_row]))] for g_row in range(len(self._map))
             ]
         else:
             self._legal_actions = [
                 [
                     tuple(
-                        action for action in ACTIONS if self._is_valid_cell(
-                            g_row + ACTION_EFFECTS[action][0],
-                            g_col + ACTION_EFFECTS[action][1]
-                        )
-                    ) for g_col in range(len(self._map[g_row]))
+                        action
+                        for action in ACTIONS
+                        if self._is_valid_cell(g_row + ACTION_EFFECTS[action][0], g_col + ACTION_EFFECTS[action][1])
+                    )
+                    for g_col in range(len(self._map[g_row]))
                 ]
                 for g_row in range(len(self._map))
             ]
@@ -54,9 +47,7 @@ class Game(object):
     # Check if the given coordinates are valid (on map and not a wall)
     def _is_valid_cell(self, row, col):
         return (
-                row >= 0 and row < len(self._map) and
-                col >= 0 and col < len(self._map[row]) and
-                self._map[row][col] != "*"
+            row >= 0 and row < len(self._map) and col >= 0 and col < len(self._map[row]) and self._map[row][col] != "*"
         )
 
     def _get_enemy_move(self):
@@ -158,13 +149,13 @@ class Game(object):
     def is_over(self):
         return (
             # Too many moves
-                self._score < -20.0
-                # LOSS - Greuceanu stepped on the balaur or the balaur ate Greuceanu
-                or self._g_pos == self._b_pos
-                # WIN - Greuceanu found 'marul fermecat'
-                or self._g_pos == self._o_pos
-                # LOSS - The balaur found 'marul fermecat'
-                or self._b_pos == self._o_pos
+            self._score < -20.0
+            # LOSS - Greuceanu stepped on the balaur or the balaur ate Greuceanu
+            or self._g_pos == self._b_pos
+            # WIN - Greuceanu found 'marul fermecat'
+            or self._g_pos == self._o_pos
+            # LOSS - The balaur found 'marul fermecat'
+            or self._b_pos == self._o_pos
         )
 
     @property

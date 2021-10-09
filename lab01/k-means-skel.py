@@ -17,11 +17,13 @@ def getArchive():
     archive_url = "http://www.uni-marburg.de/fb12/datenbionik/downloads/FCPS"
     local_archive = "FCPS.zip"
     from os import path
+
     if not path.isfile(local_archive):
         import urllib
+
         print("downloading...")
         urllib.urlretrieve(archive_url, filename=local_archive)
-        assert (path.isfile(local_archive))
+        assert path.isfile(local_archive)
         print("got the archive")
     return ZipFile(local_archive)
 
@@ -38,8 +40,8 @@ def getDataSet(archive, dataSetName):
         Xs = np.zeros([N, D])
         for i in range(N):
             data = f.readline().decode("UTF-8").strip().split("\t")
-            assert (len(data) == (D + 1))  # check line
-            assert (int(data[0]) == (i + 1))
+            assert len(data) == (D + 1)  # check line
+            assert int(data[0]) == (i + 1)
             Xs[i] = np.array(list(map(float, data[1:])))
 
     clsFile = path + ".cls"
@@ -53,13 +55,13 @@ def getDataSet(archive, dataSetName):
         i = 0
         while line and i < N:
             data = line.strip().split("\t")
-            assert (len(data) == 2)
-            assert (int(data[0]) == (i + 1))
+            assert len(data) == 2
+            assert int(data[0]) == (i + 1)
             labels[i] = int(data[1])
             line = f.readline().decode("UTF-8")
             i = i + 1
 
-        assert (i == N)
+        assert i == N
 
     return Xs, labels  # return data and correct labels
 
@@ -74,8 +76,8 @@ def init_kmeanspp(Xs, K):
     centroids[0] = Xs[randint(0, N - 1)]
 
     for k in range(1, K):
-        D2 = scipy.array([min([scipy.inner(c-x, c-x) for c in centroids]) for x in Xs])
-        probs = D2/D2.sum()
+        D2 = scipy.array([min([scipy.inner(c - x, c - x) for c in centroids]) for x in Xs])
+        probs = D2 / D2.sum()
         cumprobs = probs.cumsum()
         r = scipy.rand()
         i = -1
@@ -106,6 +108,7 @@ def init_kaufman(Xs, K):
         centroids[k] = Xs[idx]
     return centroids
 
+
 def kMeans(K, Xs):
     (N, D) = Xs.shape
 
@@ -134,8 +137,7 @@ def randIndex(clusters, labels):
     tp_plus_fp = comb(np.bincount(clusters), 2).sum()
     tp_plus_fn = comb(np.bincount(labels), 2).sum()
     A = np.c_[(clusters, labels)]
-    tp = sum(comb(np.bincount(A[A[:, 0] == i, 1]), 2).sum()
-             for i in set(clusters))
+    tp = sum(comb(np.bincount(A[A[:, 0] == i, 1]), 2).sum() for i in set(clusters))
 
     fp = tp_plus_fp - tp
     fn = tp_plus_fn - tp
@@ -155,20 +157,17 @@ def plot(Xs, labels, K, clusters):
         y = Xs[:, 1]
         for (_x, _y, _c, _l) in zip(x, y, clusters, labels):
             plt.scatter(_x, _y, s=500, c=[colors[_c]], marker=markers[_l])
-        plt.scatter(centroids[:, 0], centroids[:, 1],
-                    s=800, c=[colors[K]], marker=markers[labelsNo])
+        plt.scatter(centroids[:, 0], centroids[:, 1], s=800, c=[colors[K]], marker=markers[labelsNo])
         plt.show()
     elif Xs.shape[1] == 3:
         x = Xs[:, 0]
         y = Xs[:, 1]
         z = Xs[:, 2]
         fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
+        ax = fig.add_subplot(111, projection="3d")
         for (_x, _y, _z, _c, _l) in zip(x, y, z, clusters, labels):
             ax.scatter(_x, _y, _z, s=200, c=[colors[_c]], marker=markers[_l])
-        ax.scatter(centroids[:, 0], centroids[:, 1], centroids[:, 2],
-                   s=400, c=[colors[K]], marker=markers[labelsNo]
-                   )
+        ax.scatter(centroids[:, 0], centroids[:, 1], centroids[:, 2], s=400, c=[colors[K]], marker=markers[labelsNo])
         plt.show()
     else:
         for i in range(N1):

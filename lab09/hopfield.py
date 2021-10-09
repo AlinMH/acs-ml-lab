@@ -66,7 +66,7 @@ class HopfieldNetwork:
             self.random_reset()
             while not self.is_energy_minimal():
                 self.single_update()
-            print('step %d' % i)
+            print("step %d" % i)
             reached_state = self.get_pattern()
             hist[reached_state] = hist.get(reached_state, 0) + 1
         for key in hist:
@@ -90,7 +90,7 @@ class HopfieldNetwork:
 
     # Reset the state of the Hopfield Network to a given pattern
     def reset(self, pattern):
-        assert (len(pattern) == self.neurons_no)
+        assert len(pattern) == self.neurons_no
         for i in range(self.neurons_no):
             self.state[i] = HopfieldNetwork.CHAR_TO_INT[pattern[i]]
 
@@ -112,22 +112,21 @@ class HopfieldNetwork:
 
     # display the current state of the HopfieldNetwork
     def display_as_matrix(self, rows_no, cols_no):
-        assert (rows_no * cols_no == self.neurons_no)
+        assert rows_no * cols_no == self.neurons_no
         HopfieldNetwork.display_state_as_matrix(self.state, rows_no, cols_no)
 
     # display the current state of the HopfieldNetwork
     def display_as_image(self, rows_no, cols_no):
-        assert (rows_no * cols_no == self.neurons_no)
+        assert rows_no * cols_no == self.neurons_no
         pixels = [1 if s > 0 else 0 for s in self.state]
-        img = Image.new('1', (rows_no, cols_no))
+        img = Image.new("1", (rows_no, cols_no))
         img.putdata(pixels)
         img.show()
 
     @staticmethod
     def display_state_as_matrix(state, rows_no, cols_no):
-        assert (state.size == rows_no * cols_no)
+        assert state.size == rows_no * cols_no
         print("")
         for i in range(rows_no):
-            print("".join([HopfieldNetwork.INT_TO_CHAR[state[i * cols_no + j]]
-                           for j in range(cols_no)]))
+            print("".join([HopfieldNetwork.INT_TO_CHAR[state[i * cols_no + j]] for j in range(cols_no)]))
         print("")

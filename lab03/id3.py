@@ -5,14 +5,9 @@ import random
 
 tree = {}
 
-atrib_idx = {'buying': 0,
-             'maint': 1,
-             'doors': 2,
-             'persons': 3,
-             'lug_boot': 4,
-             'safety': 5}
+atrib_idx = {"buying": 0, "maint": 1, "doors": 2, "persons": 3, "lug_boot": 4, "safety": 5}
 
-classes = ['acc', 'unacc', 'good', 'vgood']
+classes = ["acc", "unacc", "good", "vgood"]
 
 
 def information_gain(X, values, idx):
@@ -172,18 +167,20 @@ def id3_forest(Xs, atribs, n, d):
     return trees
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     Xs = []
-    atribs = {'buying': ['vhigh', 'high', 'med', 'low'],
-              'maint': ['vhigh', 'high', 'med', 'low'],
-              'doors': ['2', '3', '4', '5more'],
-              'persons': ['2', '4', 'more'],
-              'lug_boot': ['small', 'med', 'big'],
-              'safety': ['low', 'med', 'high']}
+    atribs = {
+        "buying": ["vhigh", "high", "med", "low"],
+        "maint": ["vhigh", "high", "med", "low"],
+        "doors": ["2", "3", "4", "5more"],
+        "persons": ["2", "4", "more"],
+        "lug_boot": ["small", "med", "big"],
+        "safety": ["low", "med", "high"],
+    }
 
     with open("car.data.txt", "r") as f:
         for line in f:
-            Xs.append(line[:-1].split(','))
+            Xs.append(line[:-1].split(","))
     # random_tree(2, Xs, atribs, [])
     # id3(Xs, atribs, [])
     # trees = random_forest(Xs, atribs, n=2, d=2)

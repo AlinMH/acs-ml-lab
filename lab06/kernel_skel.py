@@ -4,6 +4,7 @@ import numpy.linalg as la
 """Implementeaza o serie de kernel-uri bine cunoscute: liniar, RBF
 """
 
+
 def linear():
     """
     Intoarce o functie anonima, in doi parametrii, x si y, ce calculeaza produsul scalar a doi vectori x si y

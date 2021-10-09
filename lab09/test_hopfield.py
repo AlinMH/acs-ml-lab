@@ -11,14 +11,14 @@ from PIL import Image
 # Reads all / first n patterns from specified file
 # It returns the number of rows, the number of cols and the patterns
 def read_patterns(args):
-    assert (path.exists(args.patterns_path))
+    assert path.exists(args.patterns_path)
 
     rows_no = args.patterns_width
     cols_no = args.patterns_height
 
     patterns = []
-    img_files = [f for f in os.listdir(args.patterns_path) if f.endswith('.jpg')]
-    img_files = img_files[:min(len(img_files), args.patterns_no)]
+    img_files = [f for f in os.listdir(args.patterns_path) if f.endswith(".jpg")]
+    img_files = img_files[: min(len(img_files), args.patterns_no)]
 
     for img_file in img_files:
         img = Image.open(os.path.join(args.patterns_path, img_file))
@@ -32,6 +32,7 @@ def read_patterns(args):
 
 # ------------------------------------------------------------------------------
 
+
 def train_hopfield(rows_no, cols_no, patterns, args):
     hopfield_net = HopfieldNetwork(rows_no * cols_no)
     hopfield_net.learn_patterns(patterns, args.train_lr)
@@ -39,13 +40,13 @@ def train_hopfield(rows_no, cols_no, patterns, args):
 
 
 def apply_noise(pattern, noise):
-    new_pattern = ''
+    new_pattern = ""
     for c in pattern:
         if random() < noise:
-            if c == 'X':
-                new_pattern += '_'
+            if c == "X":
+                new_pattern += "_"
             else:
-                new_pattern += 'X'
+                new_pattern += "X"
         else:
             new_pattern += c
     return new_pattern
@@ -77,6 +78,7 @@ def show_one(hopfield_net, rows_no, cols_no, patterns, args):
 
 # ------------------------------------------------------------------------------
 
+
 def test_hopfield(hopfield_net, patterns, args):
     # TASK 2: Testarea retelei
     # args.test_no - numarul de sabloane ce vor fi testate
@@ -98,11 +100,12 @@ def test_hopfield(hopfield_net, patterns, args):
 
 # ------------------------------------------------------------------------------
 
+
 def show_histogram(hopfield_net, rows_no, cols_no, args):
     final_states = hopfield_net.get_final_states_distribution(args.samples_no)
     for k, v in final_states.items():
         for row in range(rows_no):
-            print(k[row * cols_no: (row + 1) * cols_no])
+            print(k[row * cols_no : (row + 1) * cols_no])
         hopfield_net.reset(k)
         hopfield_net.display_as_image(rows_no, cols_no)
 
@@ -110,6 +113,7 @@ def show_histogram(hopfield_net, rows_no, cols_no, args):
 
 
 # ------------------------------------------------------------------------------
+
 
 def inverse(pattern):
     return ["_" if c == "X" else "X" for c in pattern]
@@ -119,38 +123,29 @@ def unlearn(hopfield_net, patterns, args):
     # TASK BONUS: Uitarea sabloanelor nedorite
     # args.unlearn_no - numarul de sabloane testate
     # args.unlearn_rl - rata de invatare folosita la "dezvatare" :)
-    hopfield_net.unlearn_patterns(patterns[:args.unlearn_no], args.unlearn_lr)
+    hopfield_net.unlearn_patterns(patterns[: args.unlearn_no], args.unlearn_lr)
 
 
 # ------------------------------------------------------------------------------
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("--task", type=int, default=1,
-                        help="Task type.")
-    parser.add_argument("--patterns_path", type=str, default="imgs",
-                        help="File to read patterns from.")
-    parser.add_argument("--patterns_no", type=int, default=5,
-                        help="Number of patterns to read from the file.")
-    parser.add_argument("--patterns_width", type=int, default=10,
-                        help="Width of patterns.")
-    parser.add_argument("--patterns_height", type=int, default=10,
-                        help="Height of patters.")
-    parser.add_argument("--noise", type=float, default=0.15,
-                        help="Noise level to apply to patterns.")
-    parser.add_argument("--samples_no", type=int, default=200,
-                        help="Number of samples to estimate final state dist.")
-    parser.add_argument("--test_no", type=int, default=100,
-                        help="Number of patterns to use in test phase.")
-    parser.add_argument("--unlearn_no", type=int, default=2,
-                        help="Number of patterns to use in test phase for unlearning.")
-    parser.add_argument("--train_lr", type=float, default=1.0,
-                        help="Learning rate for the 'learn' phase.")
-    parser.add_argument("--unlearn_lr", type=float, default=0.1,
-                        help="Learning rate for the 'unlearn' phase.")
+    parser.add_argument("--task", type=int, default=1, help="Task type.")
+    parser.add_argument("--patterns_path", type=str, default="imgs", help="File to read patterns from.")
+    parser.add_argument("--patterns_no", type=int, default=5, help="Number of patterns to read from the file.")
+    parser.add_argument("--patterns_width", type=int, default=10, help="Width of patterns.")
+    parser.add_argument("--patterns_height", type=int, default=10, help="Height of patters.")
+    parser.add_argument("--noise", type=float, default=0.15, help="Noise level to apply to patterns.")
+    parser.add_argument("--samples_no", type=int, default=200, help="Number of samples to estimate final state dist.")
+    parser.add_argument("--test_no", type=int, default=100, help="Number of patterns to use in test phase.")
+    parser.add_argument(
+        "--unlearn_no", type=int, default=2, help="Number of patterns to use in test phase for unlearning."
+    )
+    parser.add_argument("--train_lr", type=float, default=1.0, help="Learning rate for the 'learn' phase.")
+    parser.add_argument("--unlearn_lr", type=float, default=0.1, help="Learning rate for the 'unlearn' phase.")
     args = parser.parse_args()
 
-    assert (args.task in [1, 2, 3, 4])
+    assert args.task in [1, 2, 3, 4]
 
     # Read the patterns
     rows_no, cols_no, patterns = read_patterns(args)
